@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrowMyChess - The Best Online Chess School</title>
+    
+    <!-- Dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .animate-fade {
+            animation: fadeInScale 0.4s ease-out forwards;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 102, 0, 0.2);
+            border-left-color: #ea580c;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-900 font-sans antialiased overflow-x-hidden">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- 1. ICONS DICTIONARY ---
+        const Icons = {
+            X: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>,
+            Check: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" class="w-5 h-5 text-green-500"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>,
+            Star: () => <svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-orange-500"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>,
+            Lock: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="w-16 h-16 text-orange-600 mx-auto mb-4"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>,
+            Menu: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="w-8 h-8"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>,
+            Plus: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>,
+            Minus: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4"/></svg>,
+            Brain: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="w-10 h-10 text-orange-600"><path d="M9.5 2A2.5 2.5 0 0 0 7 4.5v15a2.5 2.5 0 0 0 5 0V4.5A2.5 2.5 0 0 0 9.5 2z"/><path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v15a2.5 2.5 0 0 1-5 0V4.5A2.5 2.5 0 0 1 14.5 2z"/></svg>,
+            Trophy: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="w-10 h-10 text-orange-600"><path d="M8 21h8m-4-4v4m0-14v10m-8-2a9 9 0 0116 0H4z"/></svg>,
+            Users: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" class="w-10 h-10 text-orange-600"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m20 0v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>,
+            WhatsApp: () => <svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        };
+
+        // --- 2. REUSABLE UI COMPONENTS ---
+        const ModalBase = ({ isOpen, onClose, title, children }) => {
+            if (!isOpen) return null;
+            return (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 animate-fade">
+                    <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+                        {/* Header Fixed Inside Modal */}
+                        <div className="flex justify-between items-center p-4 border-b shrink-0 sticky top-0 bg-white rounded-t-2xl z-10">
+                            <h2 className="text-xl font-bold text-slate-900">{title}</h2>
+                            <button onClick={onClose} className="p-2 bg-gray-100 rounded-full text-gray-600 hover:text-black hover:bg-gray-200 transition">
+                                <Icons.X />
+                            </button>
+                        </div>
+                        {/* Scrollable Content (Exact p-4 for mobile safety) */}
+                        <div className="p-4 sm:p-5 overflow-y-auto">
+                            {children}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const FormField = ({ label, type = "text", options, required = true, ...props }) => (
+            <div className="mb-4">
+                <label className="block text-sm font-bold text-gray-700 mb-1">{label} {required && "*"}</label>
+                {type === "select" ? (
+                    <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50" required={required} {...props}>
+                        <option value="">Select an option</option>
+                        {options.map(o => <option key={o.value || o} value={o.value || o}>{o.label || o}</option>)}
+                    </select>
+                ) : type === "textarea" ? (
+                    <textarea className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 h-24" required={required} {...props} />
+                ) : (
+                    <input type={type} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50" required={required} {...props} />
+                )}
+            </div>
+        );
+
+        const Button = ({ children, onClick, type = "button", variant = "primary", className = "", disabled=false }) => {
+            const baseStyle = "w-full py-4 px-6 rounded-full font-bold text-lg transition shadow-lg flex items-center justify-center gap-2";
+            const variants = {
+                primary: "bg-orange-600 text-white hover:bg-orange-700 hover:scale-[1.02]",
+                secondary: "bg-slate-900 text-white hover:bg-slate-800",
+                outline: "bg-white text-orange-600 border-2 border-orange-600 hover:bg-orange-50"
+            };
+            return (
+                <button type={type} onClick={onClick} disabled={disabled} className={`${baseStyle} ${variants[variant]} ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    {children}
+                </button>
+            );
+        };
+
+        // --- 3. FORM LOGIC & COMPONENTS ---
+        const useFormSubmit = (url) => {
+            const [status, setStatus] = useState('idle'); // idle, submitting, success
+            const submit = async (e, formData) => {
+                e.preventDefault();
+                setStatus('submitting');
+                const data = new FormData();
+                Object.keys(formData).forEach(key => data.append(key, formData[key]));
+                try {
+                    await fetch(url, { method: 'POST', mode: 'no-cors', body: data });
+                    setStatus('success');
+                } catch (err) {
+                    setStatus('success'); // no-cors hides response, assume success if no JS crash
+                }
+            };
+            return { status, submit };
+        };
+
+        const SuccessMessage = () => (
+            <div className="text-center py-8 animate-fade">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><Icons.Check /></div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">Success!</h3>
+                <p className="text-gray-600">We have received your details. Our team will contact you very soon.</p>
+            </div>
+        );
+
+        const BookDemoForm = ({ isOpen, onClose }) => {
+            const { status, submit } = useFormSubmit('https://docs.google.com/forms/d/e/1FAIpQLSc9LlPjfV1BSf8G0s1dQ6NeaZgovQrJBoieiDYYaiCIorHdpw/formResponse');
+            const handleSubmit = (e) => {
+                const f = e.target.elements;
+                submit(e, {
+                    'entry.1033220449': f.parentName.value, 'entry.300688678': f.phone.value, 'entry.2090842893': f.email.value,
+                    'entry.2096393774': f.childName.value, 'entry.992437762': f.age.value, 'entry.1580248302': f.type.value,
+                    'entry.56358230': f.goal.value, 'entry.1413669779': f.date.value, 'entry.577958966': f.time.value
+                });
+            };
+            return (
+                <ModalBase isOpen={isOpen} onClose={onClose} title="Book a Free Class">
+                    {status === 'success' ? <SuccessMessage /> : (
+                        <form onSubmit={handleSubmit} className="space-y-2">
+                            <p className="text-sm text-gray-500 mb-4">Takes 30 seconds. No credit card needed.</p>
+                            <FormField name="parentName" label="Your Name (Parent)" placeholder="John Doe" />
+                            <FormField name="phone" label="WhatsApp Number" type="tel" placeholder="+1 234 567 8900" />
+                            <FormField name="email" label="Email Address" type="email" placeholder="john@example.com" />
+                            <div className="flex flex-col sm:flex-row gap-0 sm:gap-4">
+                                <div className="flex-1"><FormField name="childName" label="Child's Name" /></div>
+                                <div className="flex-1"><FormField name="age" label="Child's Age" type="select" options={Array.from({length: 12}, (_, i) => i + 4)} /></div>
+                            </div>
+                            <div className="flex flex-col sm:flex-row gap-0 sm:gap-4">
+                                <div className="flex-1"><FormField name="type" label="Class Type" type="select" options={['1-on-1 (Private)', 'Group (Small Batch)']} /></div>
+                                <div className="flex-1"><FormField name="goal" label="Goal" type="select" options={['Fun Hobby', 'Play Tournaments', 'Better Focus/Grades']} /></div>
+                            </div>
+                            {/* Stack Date/Time vertically on mobile per strict constraints */}
+                            <div className="flex flex-col sm:flex-row gap-0 sm:gap-4">
+                                <div className="flex-1"><FormField name="date" label="Preferred Date" type="date" /></div>
+                                <div className="flex-1"><FormField name="time" label="Preferred Time" type="time" /></div>
+                            </div>
+                            <Button type="submit" disabled={status === 'submitting'}>
+                                {status === 'submitting' ? 'Booking...' : 'Confirm Free Class'}
+                            </Button>
+                        </form>
+                    )}
+                </ModalBase>
+            );
+        };
+
+        const HiringForm = ({ isOpen, onClose, type }) => {
+            // Reuses one modal for both Coach and Partner forms
+            const isCoach = type === 'coach';
+            const url = isCoach 
+                ? 'https://docs.google.com/forms/d/e/1FAIpQLSdNehBayOIwF4k0GjShh9W-0fCCxFZ-HcO6bULceKzTS1ZUUA/formResponse'
+                : 'https://docs.google.com/forms/d/e/1FAIpQLSc3eZonEw1j7iw4L3PU7SQkoNWCACGuQZR_C_m5rEUQlPKkbw/formResponse';
+            const { status, submit } = useFormSubmit(url);
+
+            const handleSubmit = (e) => {
+                const f = e.target.elements;
+                if (isCoach) {
+                    submit(e, { 'entry.1934578856': f.name.value, 'entry.1340131669': f.phone.value, 'entry.2113630131': f.email.value, 'entry.1667553521': f.title.value, 'entry.1954107159': f.rating.value, 'entry.732589416': f.fide.value, 'entry.669286842': f.exp.value });
+                } else {
+                    submit(e, { 'entry.1016630818': f.name.value, 'entry.575816052': f.phone.value, 'entry.1868950079': f.email.value, 'entry.1787926078': f.city.value, 'entry.1510150694': f.role.value, 'entry.785242570': f.impact.value, 'entry.1255896642': f.message.value });
+                }
+            };
+
+            return (
+                <ModalBase isOpen={isOpen} onClose={onClose} title={isCoach ? "Apply as Coach" : "Partner With Us"}>
+                    {status === 'success' ? <SuccessMessage /> : (
+                        <form onSubmit={handleSubmit} className="space-y-2">
+                            <FormField name="name" label="Full Name" />
+                            <FormField name="phone" label="WhatsApp Number" type="tel" />
+                            <FormField name="email" label="Email Address" type="email" />
+                            
+                            {isCoach ? (
+                                <>
+                                    <FormField name="title" label="Chess Title (If any)" options={['None', 'CM', 'FM', 'IM', 'GM', 'WCM', 'WFM', 'WIM', 'WGM', 'National Master']} type="select" required={false} />
+                                    <div className="flex gap-4">
+                                        <div className="flex-1"><FormField name="rating" label="Peak Rating" type="number" required={false} /></div>
+                                        <div className="flex-1"><FormField name="exp" label="Years Experience" type="number" /></div>
+                                    </div>
+                                    <FormField name="fide" label="FIDE Profile Link" type="url" required={false} />
+                                </>
+                            ) : (
+                                <>
+                                    <FormField name="city" label="City & Country" />
+                                    <FormField name="role" label="Your Role" options={['Parent', 'School Admin', 'Chess Player', 'Society Head', 'Other']} type="select" />
+                                    <FormField name="impact" label="Where do you want to partner?" options={['My Child\'s School', 'My Residential Society', 'Online Affiliation', 'Other']} type="select" />
+                                    <FormField name="message" label="How can we grow together? (Max 500 chars)" type="textarea" maxLength="500" />
+                                </>
+                            )}
+                            <Button type="submit" disabled={status === 'submitting'}>Submit Application</Button>
+                        </form>
+                    )}
+                </ModalBase>
+            );
+        };
+
+        // --- 4. PAGE SECTIONS ---
+
+        const Navbar = ({ openDemo }) => (
+            <nav className="fixed w-full bg-white/95 backdrop-blur shadow-sm z-40 border-b border-gray-100">
+                <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                        <img src="logo.png" alt="♟ GrowMyChess" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} className="h-8 md:h-10 hidden" />
+                        <span className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">♟ GrowMyChess</span>
+                    </div>
+                    <div className="hidden md:flex items-center gap-6 font-semibold text-gray-600">
+                        <a href="#curriculum" className="hover:text-orange-600">Curriculum</a>
+                        <a href="#pricing" className="hover:text-orange-600">Pricing</a>
+                        <a href="tel:+918306126575" className="text-slate-900 flex items-center gap-1">📞 +91 83061-26575</a>
+                        <Button onClick={openDemo} className="py-2 px-5 text-sm">Free Class</Button>
+                    </div>
+                    <button className="md:hidden text-slate-900 p-1" onClick={openDemo}><span className="bg-orange-600 text-white px-4 py-2 rounded-full font-bold text-sm">Free Class</span></button>
+                </div>
+            </nav>
+        );
+
+        const Hero = ({ openDemo }) => (
+            <section className="pt-32 pb-16 px-4 max-w-6xl mx-auto text-center">
+                <div className="inline-block bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full font-bold text-sm mb-6 uppercase tracking-wider">
+                    Ages 4 to 15
+                </div>
+                <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 leading-tight">
+                    The Best Online <br className="hidden md:block"/> <span className="text-orange-600">Chess School</span> for Kids.
+                </h1>
+                <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-2xl mx-auto font-medium">
+                    We make learning chess easy, fun, and highly rewarding. Watch your child's focus, grades, and confidence grow in just 30 days.
+                </p>
+                <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto">
+                    <Button onClick={openDemo} className="py-5 text-xl">Book a Free Class Now</Button>
+                </div>
+                <p className="mt-4 text-sm text-gray-500 font-medium">Join 500+ happy parents. No credit card required.</p>
+            </section>
+        );
+
+        const SocialProof = () => (
+            <div className="bg-white py-8 border-y border-gray-200">
+                <div className="max-w-6xl mx-auto px-4">
+                    <p className="text-center text-sm font-bold text-gray-400 mb-4 uppercase tracking-widest">Coaches & Kids recognized by</p>
+                    <div className="flex flex-wrap justify-center gap-8 md:gap-16 items-center opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+                        <span className="text-2xl font-black text-slate-800">FIDE</span>
+                        <span className="text-2xl font-black text-green-700">Chess.com</span>
+                        <span className="text-2xl font-black text-slate-800">AICF</span>
+                        <span className="text-2xl font-serif font-bold text-slate-800">THE TIMES OF INDIA</span>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const Methodology = () => {
+            const items = [
+                { icon: <Icons.Brain />, title: "Boosts Brain Power", desc: "Chess builds memory, logic, and deep focus in young minds." },
+                { icon: <Icons.Users />, title: "Expert Teachers", desc: "Top-rated coaches who know how to keep kids engaged and smiling." },
+                { icon: <Icons.Trophy />, title: "Play Tournaments", desc: "We prepare kids to compete and win real medals." },
+                { icon: <Icons.Check />, title: "Puzzles & Games", desc: "Homework isn't boring; it's fun interactive puzzles." },
+                { icon: <Icons.Star />, title: "Safe & Friendly", desc: "100% child-safe online environment." },
+                { icon: <Icons.Plus />, title: "Progress Reports", desc: "Monthly updates for parents on rating and skill growth." }
+            ];
+            return (
+                <section className="py-20 px-4 max-w-6xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">Why Parents Love Us</h2>
+                        <p className="text-xl text-gray-600">More than just a game. It's life training.</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {items.map((it, i) => (
+                            <div key={i} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow">
+                                <div className="mb-4 bg-orange-50 w-16 h-16 rounded-2xl flex items-center justify-center">{it.icon}</div>
+                                <h3 className="text-xl font-bold mb-2">{it.title}</h3>
+                                <p className="text-gray-600 leading-relaxed">{it.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            );
+        };
+
+        const Curriculum = () => (
+            <section id="curriculum" className="py-20 bg-orange-50 px-4 border-y border-orange-100">
+                <div className="max-w-6xl mx-auto text-center">
+                    <h2 className="text-4xl font-black mb-12">The Path to Mastery</h2>
+                    <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+                        {['Beginner', 'Intermediate', 'Advanced'].map((step, i) => (
+                            <div key={i} className="flex items-center gap-4 md:gap-8">
+                                <div className="bg-white px-6 py-4 rounded-full font-bold shadow-sm border border-orange-200 text-orange-900">
+                                    Level {i+1}: {step}
+                                </div>
+                                {i < 2 && <div className="hidden md:block text-orange-300 font-bold">➔</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        );
+
+        const Founder = () => (
+            <section className="py-20 px-4 max-w-5xl mx-auto">
+                <div className="bg-slate-900 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-10 shadow-2xl text-white">
+                    <div className="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-orange-500 shrink-0 bg-gray-800">
+                        {/* Fallback image style applied if generated-image fails */}
+                        <img src="abhishek_headshot.jpg" alt="Abhishek Maniyar" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='flex'; }} className="w-full h-full object-cover" />
+                        <div className="w-full h-full hidden items-center justify-center text-4xl font-black text-gray-500">AM</div>
+                    </div>
+                    <div>
+                        <h2 className="text-3xl md:text-4xl font-black mb-2">Meet the Founder</h2>
+                        <p className="text-orange-400 text-xl font-bold mb-6">Abhishek Maniyar</p>
+                        <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+                            "I started GrowMyChess to give kids the exact step-by-step training I wish I had. Chess taught me discipline, and my mission is to pass that superpower to your child."
+                        </p>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                            <div className="bg-slate-800 p-3 rounded-xl border border-slate-700"><p className="text-xs text-gray-400 mb-1 uppercase">Titles</p><p className="font-bold">ACM & NI</p></div>
+                            <div className="bg-slate-800 p-3 rounded-xl border border-slate-700"><p className="text-xs text-gray-400 mb-1 uppercase">Standard</p><p className="font-bold">1457</p></div>
+                            <div className="bg-slate-800 p-3 rounded-xl border border-slate-700"><p className="text-xs text-gray-400 mb-1 uppercase">Rapid</p><p className="font-bold">1512</p></div>
+                            <div className="bg-slate-800 p-3 rounded-xl border border-slate-700"><p className="text-xs text-gray-400 mb-1 uppercase">Blitz</p><p className="font-bold">1446</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+
+        const Pricing = ({ openDemo }) => {
+            const [cur, setCur] = useState('USD');
+            const rates = { USD: { symbol: '$', rate: 1 }, INR: { symbol: '₹', rate: 83 }, GBP: { symbol: '£', rate: 0.79 }, AUD: { symbol: 'A$', rate: 1.5 }, SGD: { symbol: 'S$', rate: 1.35 }, AED: { symbol: 'د.إ', rate: 3.67 } };
+            
+            const plans = [
+                { name: "Starter", classes: "4 Classes / mo", desc: "Best to test the waters.", basePrice: 49 },
+                { name: "Winner", classes: "8 Classes / mo", desc: "Most Popular! Fast improvement.", basePrice: 89, popular: true },
+                { name: "Pro", classes: "12 Classes / mo", desc: "For serious tournament players.", basePrice: 149 }
+            ];
+
+            return (
+                <section id="pricing" className="py-20 bg-white px-4">
+                    <div className="max-w-6xl mx-auto text-center">
+                        <h2 className="text-4xl md:text-5xl font-black mb-6">Simple, Honest Pricing</h2>
+                        <div className="inline-flex bg-gray-100 rounded-full p-1 mb-12 overflow-x-auto max-w-full">
+                            {Object.keys(rates).map(c => (
+                                <button key={c} onClick={() => setCur(c)} className={`px-4 sm:px-6 py-2 rounded-full font-bold text-sm transition-all ${cur === c ? 'bg-white shadow text-orange-600' : 'text-gray-500 hover:text-black'}`}>
+                                    {c}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto text-left">
+                            {plans.map((p, i) => (
+                                <div key={i} className={`relative p-8 rounded-3xl border-2 ${p.popular ? 'border-orange-500 bg-orange-50/50 shadow-xl scale-105 md:z-10' : 'border-gray-200 bg-white'}`}>
+                                    {p.popular && <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-orange-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Most Popular</div>}
+                                    <h3 className="text-2xl font-bold mb-2">{p.name}</h3>
+                                    <p className="text-gray-600 mb-6">{p.desc}</p>
+                                    <div className="mb-6 font-black text-slate-900" key={cur + p.basePrice}> {/* Physical re-render trigger */}
+                                        <span className="text-4xl animate-fade inline-block">{rates[cur].symbol}{Math.round(p.basePrice * rates[cur].rate)}</span>
+                                        <span className="text-gray-500 text-lg font-normal"> / month</span>
+                                    </div>
+                                    <ul className="space-y-4 mb-8">
+                                        <li className="flex items-center gap-3"><Icons.Check /> <span className="font-bold">{p.classes}</span></li>
+                                        <li className="flex items-center gap-3"><Icons.Check /> Live 1-on-1 Feedback</li>
+                                        <li className="flex items-center gap-3"><Icons.Check /> Homework Puzzles</li>
+                                    </ul>
+                                    <Button onClick={openDemo} variant={p.popular ? 'primary' : 'outline'}>Start Free Trial</Button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const FAQ = () => {
+            const faqs = [
+                { q: "Do I need to buy a physical chess board?", a: "No! Everything is taught online using interactive boards on the screen. A physical board is optional but nice to have." },
+                { q: "What if my child misses a class?", a: "We are flexible! Just let your coach know 12 hours in advance, and we will reschedule the class for free." },
+                { q: "How are the payments handled?", a: "Payments are made monthly. There are no hidden fees or long-term lock-in contracts. You can cancel anytime." }
+            ];
+            const [open, setOpen] = useState(0);
+            return (
+                <section className="py-20 bg-gray-50 px-4">
+                    <div className="max-w-3xl mx-auto">
+                        <h2 className="text-3xl font-black text-center mb-10">Common Questions</h2>
+                        <div className="space-y-4">
+                            {faqs.map((f, i) => (
+                                <div key={i} className="bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-300">
+                                    <button onClick={() => setOpen(open === i ? -1 : i)} className="w-full p-6 text-left flex justify-between items-center font-bold text-lg hover:bg-gray-50">
+                                        {f.q}
+                                        <span className={`transform transition-transform text-orange-500 ${open === i ? 'rotate-180' : ''}`}><Icons.Plus /></span>
+                                    </button>
+                                    {open === i && <div className="p-6 pt-0 text-gray-600 leading-relaxed border-t border-gray-100">{f.a}</div>}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const Blog = () => {
+            const [activeArticle, setActiveArticle] = useState(null);
+            const articles = [
+                { title: "What is the Best Age to Start Chess?", excerpt: "Is 4 too young? Is 12 too old? Here is what experts say...", content: "The ideal age to introduce chess is between 4 and 7. At this age, children's brains are like sponges. They easily grasp the movement of pieces. However, it's never too late! Starting at 12 or 15 simply means the child can grasp complex strategies faster." },
+                { title: "Chess vs Video Games", excerpt: "How to swap mindless screen time for brain-building fun.", content: "Video games often rely on quick reflexes and instant gratification. Chess provides a dopamine hit based on deep logic, patience, and outsmarting an opponent. It turns screen time into highly productive brain-training." },
+                { title: "Does Chess Improve School Grades?", excerpt: "The shocking link between chess and math scores.", content: "Yes! Multiple studies show that kids who play chess score up to 20% higher in math and reading. Chess teaches calculation, pattern recognition, and the ability to sit still and focus—skills directly transferable to school." }
+            ];
+            return (
+                <section className="py-20 px-4 bg-white border-t border-gray-200">
+                    <div className="max-w-6xl mx-auto">
+                        <h2 className="text-3xl font-black mb-10 text-center">Helpful Tips for Parents</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {articles.map((art, i) => (
+                                <div key={i} onClick={() => setActiveArticle(art)} className="bg-gray-50 p-6 rounded-2xl cursor-pointer hover:shadow-lg hover:bg-orange-50 transition border border-gray-100 group">
+                                    <h3 className="text-xl font-bold mb-3 group-hover:text-orange-600 transition">{art.title}</h3>
+                                    <p className="text-gray-600">{art.excerpt}</p>
+                                    <p className="text-orange-600 font-bold mt-4 text-sm uppercase tracking-wide">Read More →</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <ModalBase isOpen={!!activeArticle} onClose={() => setActiveArticle(null)} title={activeArticle?.title}>
+                        <p className="text-gray-700 leading-relaxed text-lg">{activeArticle?.content}</p>
+                    </ModalBase>
+                </section>
+            );
+        };
+
+        const Footer = ({ openCoach, openPartner }) => (
+            <footer className="bg-slate-900 text-white py-12 px-4 border-t border-slate-800">
+                <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div className="col-span-1 md:col-span-2">
+                        <div className="flex items-center gap-2 mb-4">
+                            <span className="text-2xl font-black tracking-tight">♟ GrowMyChess</span>
+                        </div>
+                        <p className="text-gray-400 mb-6 max-w-sm">Making kids smarter, one move at a time. The premium online academy.</p>
+                        <p className="text-gray-400 text-sm">© 2026 GrowMyChess. All rights reserved.</p>
+                    </div>
+                    <div>
+                        <h4 className="font-bold mb-4 text-orange-500 uppercase tracking-widest text-sm">Quick Links</h4>
+                        <ul className="space-y-2 text-gray-300">
+                            <li><a href="#curriculum" className="hover:text-white">Curriculum</a></li>
+                            <li><a href="#pricing" className="hover:text-white">Pricing</a></li>
+                            <li><a href="mailto:hello@growmychess.com" className="hover:text-white">hello@growmychess.com</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="font-bold mb-4 text-orange-500 uppercase tracking-widest text-sm">Work With Us</h4>
+                        <ul className="space-y-2 text-gray-300">
+                            <li><button onClick={openCoach} className="hover:text-white text-left">Apply as Coach</button></li>
+                            <li><button onClick={openPartner} className="hover:text-white text-left">Partner Program</button></li>
+                        </ul>
+                    </div>
+                </div>
+            </footer>
+        );
+
+        // --- 5. MAIN APP ---
+        const App = () => {
+            const [modalState, setModalState] = useState({ type: null }); // null, 'demo', 'coach', 'partner'
+            const close = () => setModalState({ type: null });
+
+            // Lock body scroll when modal is open
+            useEffect(() => {
+                document.body.style.overflow = modalState.type ? 'hidden' : 'unset';
+            }, [modalState.type]);
+
+            return (
+                <div className="relative">
+                    <Navbar openDemo={() => setModalState({ type: 'demo' })} />
+                    <Hero openDemo={() => setModalState({ type: 'demo' })} />
+                    <SocialProof />
+                    <Methodology />
+                    <Curriculum />
+                    <Founder />
+                    <Pricing openDemo={() => setModalState({ type: 'demo' })} />
+                    <FAQ />
+                    <Blog />
+                    <Footer openCoach={() => setModalState({ type: 'coach' })} openPartner={() => setModalState({ type: 'partner' })} />
+                    
+                    {/* Floating WhatsApp */}
+                    <a href="https://wa.me/918306126575" target="_blank" rel="noopener noreferrer" className="fixed bottom-6 right-6 bg-[#25D366] p-4 rounded-full shadow-2xl hover:scale-110 transition-transform z-40 flex items-center justify-center">
+                        <Icons.WhatsApp />
+                    </a>
+
+                    {/* Modals */}
+                    <BookDemoForm isOpen={modalState.type === 'demo'} onClose={close} />
+                    <HiringForm isOpen={modalState.type === 'coach'} onClose={close} type="coach" />
+                    <HiringForm isOpen={modalState.type === 'partner'} onClose={close} type="partner" />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
