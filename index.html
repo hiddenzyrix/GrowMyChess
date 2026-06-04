@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="GrowMyChess - The Best Online Chess School for Kids. Boost brain power and focus with expert chess coaching.">
     <title>GrowMyChess - The Best Online Chess School</title>
     
     <!-- Dependencies -->
@@ -22,14 +24,13 @@
         .animate-fade {
             animation: fadeInScale 0.4s ease-out forwards;
         }
-        .spinner {
-            border: 4px solid rgba(255, 102, 0, 0.2);
-            border-left-color: #ea580c;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
+        /* Blog Content Styling */
+        .blog-content p { margin-bottom: 1.5rem; line-height: 1.8; color: #475569; }
+        .blog-content h2 { font-size: 1.875rem; font-weight: 900; margin-top: 2.5rem; margin-bottom: 1rem; color: #0f172a; }
+        .blog-content h3 { font-size: 1.5rem; font-weight: 800; margin-top: 2rem; margin-bottom: 1rem; color: #0f172a; }
+        .blog-content ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1.5rem; color: #475569; }
+        .blog-content li { margin-bottom: 0.5rem; }
+        .blog-content strong { color: #0f172a; font-weight: 700; }
     </style>
 </head>
 <body class="bg-gray-50 text-slate-900 font-sans antialiased overflow-x-hidden">
@@ -38,35 +39,647 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // --- 1. ICONS DICTIONARY ---
+        // ============================================================================
+        // 📚 BLOG DATABASE
+        // To add a new blog, copy one of the objects below and paste it at the top.
+        // Make sure the "id" is unique (use dashes instead of spaces).
+        // ============================================================================
+        const BLOG_DATABASE = [
+            {
+                id: "how-much-does-chess-coach-cost",
+                title: "How Much Does a Chess Coach Cost? (And How to Find the Perfect Fit for Your Child)",
+                date: "November 14, 2026",
+                author: "Abhishek Maniyar",
+                readTime: "7 min read",
+                category: "Pricing",
+                excerpt: "You want your child to learn chess, but what is it going to cost? Let's break down chess coaching prices with real numbers and honest advice.",
+                content: `
+                    <p>You want your child to learn chess. Maybe you've heard it boosts their brain power. Maybe you've noticed they need help focusing. Or maybe they just love the game.</p>
+                    <p>But now comes the big question: <strong>What's this going to cost me?</strong></p>
+                    <p>Let's break it down in the simplest way possible. No fancy jargon. No hidden surprises. Just real numbers and honest advice to help you make the best choice for your family.</p>
+
+                    <h2>What Does a Chess Coach Actually Charge?</h2>
+                    <p>Here's the truth: chess coaching prices are all over the map.</p>
+                    <p>Think of it like hiring a babysitter. Some charge $10 an hour. Some charge $50. It depends on experience, location, and what they offer.</p>
+                    <p>Here's what you can expect:</p>
+
+                    <h3>In-Person Chess Coaches</h3>
+                    <ul>
+                        <li><strong>Beginner coaches:</strong> $20 to $40 per hour</li>
+                        <li><strong>Experienced coaches:</strong> $50 to $100 per hour</li>
+                        <li><strong>Master-level coaches:</strong> $100 to $300+ per hour</li>
+                    </ul>
+                    <p>Sounds expensive, right? And that's before you add gas money, driving time, and the hassle of getting your kid to and from lessons.</p>
+
+                    <h3>Online Chess Classes for Kids</h3>
+                    <p>This is where things get better for your wallet.</p>
+                    <ul>
+                        <li><strong>Group classes online:</strong> $10 to $30 per session</li>
+                        <li><strong>Private online lessons:</strong> $25 to $75 per hour</li>
+                        <li><strong>Monthly subscription programs:</strong> $50 to $150 per month (usually includes multiple classes)</li>
+                    </ul>
+                    <p>Online options cost less because coaches don't need fancy office space. You don't waste time driving. Your child learns from your kitchen table in their favorite pajamas.</p>
+
+                    <h2>Why Do Prices Vary So Much?</h2>
+                    <p>Not all chess coaches are created equal. Here's what affects the price tag:</p>
+                    <ul>
+                        <li><strong>Coach Experience:</strong> A college student who loves chess will charge less than a grandmaster. Both can teach your child well, especially at the beginner level.</li>
+                        <li><strong>Class Size:</strong> Private one-on-one lessons cost more. Group classes cost less but still give great value.</li>
+                        <li><strong>Lesson Length:</strong> 30-minute sessions for young kids (ages 4-7) run cheaper. 60-minute sessions for older students cost more.</li>
+                        <li><strong>What's Included:</strong> Some coaches just show up and play. Others provide worksheets, homework, progress reports, and online practice tools.</li>
+                    </ul>
+
+                    <h2>What Should You Actually Pay For?</h2>
+                    <p>Here's what matters when you're spending your hard-earned money on online chess classes for kids:</p>
+                    
+                    <h3>You Want a Coach Who:</h3>
+                    <ul>
+                        <li>✅ <strong>Knows how to talk to children</strong> – Not just chess theory, but actual kid-friendly teaching</li>
+                        <li>✅ <strong>Makes it fun</strong> – If your child dreads lessons, they won't learn</li>
+                        <li>✅ <strong>Tracks progress</strong> – You should see improvement, not just playtime</li>
+                        <li>✅ <strong>Offers flexible scheduling</strong> – Because life gets busy</li>
+                        <li>✅ <strong>Gives you updates</strong> – You deserve to know how your child is doing</li>
+                    </ul>
+                    
+                    <h3>You Don't Need to Pay Extra For:</h3>
+                    <ul>
+                        <li>❌ A grandmaster title (unless your child is already competing nationally)</li>
+                        <li>❌ Fancy office locations</li>
+                        <li>❌ Expensive textbooks that gather dust</li>
+                    </ul>
+
+                    <h2>The Hidden Costs Nobody Talks About</h2>
+                    <p>Before you sign up anywhere, watch out for these sneaky extras:</p>
+                    <ul>
+                        <li><strong>Registration fees</strong> – Some places charge $25 to $100 just to sign up</li>
+                        <li><strong>Cancellation fees</strong> – Miss a class? Some coaches still charge you</li>
+                        <li><strong>Material costs</strong> – Books, workbooks, and online memberships</li>
+                        <li><strong>Tournament fees</strong> – If your child wants to compete</li>
+                        <li><strong>Travel and time</strong> – For in-person lessons, your gas and hours matter too</li>
+                    </ul>
+                    <p>At GrowMyChess.com, we believe in simple, honest pricing. What you see is what you pay. No surprise fees.</p>
+
+                    <h2>How Online Chess Classes Save You Money (And Sanity)</h2>
+                    <p>Let's do some quick math.</p>
+                    
+                    <h3>Traditional In-Person Coaching:</h3>
+                    <ul>
+                        <li>Coach fee: $40/hour</li>
+                        <li>Driving time: 30 minutes each way (1 hour total)</li>
+                        <li>Gas money: $5 per trip</li>
+                        <li>Your time value: Priceless</li>
+                        <li><strong>Real cost: $45 plus your entire afternoon</strong></li>
+                    </ul>
+                    
+                    <h3>Online Chess Classes for Kids:</h3>
+                    <ul>
+                        <li>Class fee: $15-25/session</li>
+                        <li>Driving time: Zero</li>
+                        <li>Gas money: Zero</li>
+                        <li>Your child logs in, you keep doing what you need to do</li>
+                        <li><strong>Real cost: Just the class fee</strong></li>
+                    </ul>
+                    <p>Over a month, that's easily $100+ in savings. Over a year? You could take a family vacation with what you save.</p>
+
+                    <h2>What About Free Chess Websites?</h2>
+                    <p>Look, we get it. YouTube has free chess videos. Chess.com lets kids play for free.</p>
+                    <p>But here's the problem: there's no structure. No feedback. No accountability.</p>
+                    <p>Your child might watch a video or two, play a few games, then quit when it gets hard. That's not learning. That's just screen time.</p>
+                    <p>A real coach creates a plan. They spot mistakes your child doesn't see. They encourage them when they're frustrated. They turn chess from a random hobby into a skill that builds their brain.</p>
+                    <p>Free websites are like free gym equipment in a park. Sure, it's there. But most people need a trainer to actually see results.</p>
+
+                    <h2>How to Choose the Right Chess Coach for Your Budget</h2>
+                    <ul>
+                        <li><strong>Step 1: Know Your Goal.</strong> Are you looking for basic chess skills and fun? (Group classes work great). Serious competitive training? (Private lessons might be worth it). Brain development and focus? (Structured curriculum matters most).</li>
+                        <li><strong>Step 2: Start With a Trial Class.</strong> Never, ever pay for a month upfront without trying one class first. Watch how the coach interacts with your child. Does your kid seem interested? Excited? That's your answer.</li>
+                        <li><strong>Step 3: Check What's Included.</strong> Ask these questions: How many classes per month? What happens if we miss a class? Do you provide practice materials? How do you measure progress?</li>
+                        <li><strong>Step 4: Calculate the True Cost.</strong> Don't just look at the hourly rate. Consider your time savings with online classes, flexibility to fit lessons into busy schedules, and the long-term benefits to your child's brain development.</li>
+                    </ul>
+
+                    <h2>What Parents Are Really Paying For</h2>
+                    <p>When you invest in online chess classes for kids, you're not just buying chess moves. You're buying:</p>
+                    <ul>
+                        <li><strong>Better focus in school</strong> – Chess trains kids to concentrate for longer periods</li>
+                        <li><strong>Problem-solving skills</strong> – Every game is a new puzzle to solve</li>
+                        <li><strong>Confidence</strong> – Winning (and losing gracefully) builds character</li>
+                        <li><strong>Screen time that actually helps</strong> – Instead of mindless games, they're building their brain</li>
+                        <li><strong>A hobby that lasts forever</strong> – Unlike trendy toys, chess never gets old</li>
+                        <li><strong>Quiet time for you</strong> – 30-60 minutes of productive, educational activity</li>
+                    </ul>
+                    <p>One parent told us: <em>"For the price of two movie tickets, my daughter gets a week of chess classes that actually make her smarter. No brainer."</em></p>
+
+                    <h2>The GrowMyChess.com Difference</h2>
+                    <p>We created GrowMyChess.com because we're parents too. We know you want quality without the crazy price tag.</p>
+                    <p>Here's what you get:</p>
+                    <ul>
+                        <li>🎯 Live online chess classes designed specifically for kids ages 4-15</li>
+                        <li>🎯 Small group sizes so every child gets attention</li>
+                        <li>🎯 Experienced coaches who actually know how to teach children</li>
+                        <li>🎯 Flexible scheduling that works around school and activities</li>
+                        <li>🎯 Progress tracking so you see real improvement</li>
+                        <li>🎯 Fun, engaging lessons that kids actually look forward to</li>
+                        <li>🎯 Affordable pricing that won't break the bank</li>
+                        <li>🎯 Free trial class so you risk nothing</li>
+                    </ul>
+
+                    <h2>Real Parents, Real Savings, Real Results</h2>
+                    <p><em>"We tried an in-person coach for three months. It cost us $480 plus all the driving. My son learned more in the first month at GrowMyChess than he did in three months before. And we're saving money!"</em> – Sarah, mom of 7-year-old</p>
+                    <p><em>"I was skeptical about online learning for my 5-year-old. But the coach keeps her engaged the whole time. It's amazing. And at $60/month instead of $200+, it's actually affordable for our family."</em> – Mike, dad of 5-year-old</p>
+
+                    <h2>So... What Should YOU Pay?</h2>
+                    <p>Here's our honest recommendation:</p>
+                    <ul>
+                        <li><strong>For kids just starting out (ages 4-8):</strong> Group online classes ($50-80/month). This gives them structure, fun, and foundation.</li>
+                        <li><strong>For kids getting serious (ages 9-12):</strong> Mix of group classes and occasional private lessons ($80-120/month). They'll develop real skills and maybe compete.</li>
+                        <li><strong>For competitive players (ages 13-15):</strong> Regular private coaching ($120-200/month). Worth it if they're tournament-focused.</li>
+                    </ul>
+                    <p>But here's the secret: start small and scale up only if your child loves it. One group class per week is enough to see if chess clicks for your child. If they're begging for more lessons after a month, you'll know it's working.</p>
+
+                    <h2>Your Next Step (Do This Today)</h2>
+                    <p>Stop wondering if chess coaching fits your budget.</p>
+                    <p>Stop scrolling through endless Google results trying to compare prices.</p>
+                    <p><a href="#" class="open-demo-link text-orange-600 font-bold underline cursor-pointer">Just book a free trial class at GrowMyChess.com right now.</a></p>
+                    
+                    <p>Here's what happens next:</p>
+                    <ul>
+                        <li>Pick a time that works for your schedule (we have lots of options)</li>
+                        <li>Your child attends a real class with other kids their age</li>
+                        <li>You watch how they respond (you'll know in 30 minutes if this is right)</li>
+                        <li>Decide with zero pressure and complete information</li>
+                    </ul>
+                    <p>No credit card required. No commitment. No risk.</p>
+                    <p>If your child loves it, great! You've found an affordable way to boost their brain power. If they don't? No problem. You lost nothing but 30 minutes.</p>
+                    
+                    <p>👉 <a href="#" class="open-demo-link text-orange-600 font-bold underline cursor-pointer">Click here to book your free trial class at GrowMyChess.com</a></p>
+                    
+                    <p>Your child's sharper mind, better focus, and increased confidence are just one class away. And it costs you exactly zero dollars to find out. What are you waiting for?</p>
+                    <p><em>P.S. – Spots for trial classes fill up fast because, well, they're free and parents love them. Grab your spot now before you forget. Your future self (and your child's teacher) will thank you.</em></p>
+                `
+            },
+            {
+                id: "online-vs-in-person-chess-coaching",
+                title: "Online Chess Coaching vs In-Person: Which One Actually Helps Your Child Learn Better?",
+                date: "November 10, 2026",
+                author: "Abhishek Maniyar",
+                readTime: "7 min read",
+                category: "Guide",
+                excerpt: "You want your child to get smarter, focus better, and build confidence. Chess can do all that. But should you drive across town for in-person lessons, or let them learn online from home?",
+                content: `
+                    <p>You want your child to get smarter, focus better, and build confidence. Chess can do all that. But here's the big question: should you drive across town for in-person lessons, or let them learn online from home?</p>
+                    <p>Let's break it down so you can make the best choice for your family.</p>
+
+                    <h2>What Makes Online Chess Classes Different?</h2>
+                    <p><strong>Online chess coaching</strong> means your child learns through a computer or tablet. They connect with a real teacher through video calls, play on digital boards, and practice whenever it fits your schedule.</p>
+                    <p><strong>In-person coaching</strong> is the traditional way. You take your child to a physical location where they sit with an instructor face-to-face.</p>
+                    <p>Both can teach chess. But the experience? Completely different.</p>
+
+                    <h2>The Honest Truth About In-Person Chess Lessons</h2>
+                    
+                    <h3>The Good Parts</h3>
+                    <ul>
+                        <li><strong>Real human connection.</strong> Your child sits across from someone who can physically move pieces and point at the board.</li>
+                        <li><strong>Fewer distractions (maybe).</strong> No YouTube or games one click away. Just chess and the teacher.</li>
+                        <li><strong>Social interaction.</strong> If it's a group class, kids meet other chess players their age.</li>
+                    </ul>
+
+                    <h3>The Not-So-Good Parts</h3>
+                    <ul>
+                        <li><strong>You become a taxi driver.</strong> Between school, homework, and dinner, adding another trip across town gets exhausting fast.</li>
+                        <li><strong>Limited teacher choices.</strong> You're stuck with whoever teaches near you. If they're not great with young kids, tough luck.</li>
+                        <li><strong>More expensive.</strong> Paying for a physical location means higher fees. Sometimes double what online classes cost.</li>
+                        <li><strong>Rigid schedules.</strong> Miss a class because your kid got sick? That lesson is usually gone forever.</li>
+                    </ul>
+
+                    <h2>Why Parents Are Choosing Online Chess Classes for Kids</h2>
+                    
+                    <h3>1. Your Child Learns From Anywhere (Yes, Even in Pajamas)</h3>
+                    <p>No car rides. No traffic. No rushing through dinner.</p>
+                    <p>Your child logs in from your living room, kitchen table, or even grandma's house during a visit. The classroom comes to them.</p>
+                    <p>For busy parents juggling work, siblings, and life, this changes everything.</p>
+
+                    <h3>2. You Get the Best Teachers, Not Just the Nearest Ones</h3>
+                    <p>With online chess coaching, you're not limited to your neighborhood. Your child can learn from nationally-ranked coaches, former champions, or teachers who specialize in teaching young beginners.</p>
+                    <p>Think about it: would you rather have the best teacher or just the closest one?</p>
+
+                    <h3>3. Your Wallet Will Thank You</h3>
+                    <p>Online classes cost less because there's no expensive building to maintain. Many online chess academies charge 30-50% less than in-person options.</p>
+                    <p>Plus, you save on gas money and time. Time is money, especially when you're a parent.</p>
+
+                    <h3>4. Flexible Scheduling That Fits Real Life</h3>
+                    <p>Kid has soccer practice Tuesday? Schedule chess for Wednesday. Family vacation coming up? Pause and resume easily.</p>
+                    <p>Most online chess platforms let you choose lesson times that actually work for your family. Not the other way around.</p>
+
+                    <h3>5. Kids Actually Pay Attention Better</h3>
+                    <p>Surprised? Here's why it works.</p>
+                    <p>Online lessons are usually one-on-one or very small groups. That means your child gets more personal attention than sitting in a classroom with 15 other kids.</p>
+                    <p>The teacher sees exactly what they're doing on the digital board. No hiding in the back row.</p>
+                    <p>Plus, kids today are comfortable with screens. It feels natural to them. They engage, they focus, they learn.</p>
+
+                    <h3>6. You Can Watch Your Child Learn</h3>
+                    <p>Ever wonder what actually happens in a chess lesson? With online classes, you can peek in anytime.</p>
+                    <p>You see how the teacher explains things. You watch your child's progress in real-time. You're not guessing if it's working—you know.</p>
+
+                    <h2>What About Screen Time? (The Question Every Parent Asks)</h2>
+                    <p>Yes, online chess classes happen on a screen. But there's a massive difference between watching random videos and learning a skill.</p>
+                    <p>Chess requires active thinking. Your child isn't passively scrolling. They're solving problems, planning moves, and building concentration.</p>
+                    <p>Think of it as <strong>"smart screen time."</strong> The kind that actually develops their brain instead of just entertaining it.</p>
+                    <p>Most online chess classes last 30-60 minutes. That's manageable and won't add much to their daily screen total.</p>
+
+                    <h2>Do Kids Really Learn as Well Online?</h2>
+                    <p>Here's what actually matters: <strong>the quality of teaching, not the location.</strong></p>
+                    <p>A great online chess coach who knows how to engage kids, explain concepts clearly, and make learning fun will beat a mediocre in-person teacher every time.</p>
+                    <p>Studies on online learning show that one-on-one or small-group virtual instruction can be just as effective—sometimes more effective—than traditional classroom settings.</p>
+                    <p>Why? Because it's personalized. The lesson moves at your child's pace. They can ask questions without feeling embarrassed in front of a big group.</p>
+
+                    <h2>When Does In-Person Coaching Make More Sense?</h2>
+                    <p>Let's be fair. In-person lessons work better for some families:</p>
+                    <ul>
+                        <li><strong>Very young children (4-5 years old)</strong> who can't sit still for screens yet. Some kids this age need physical interaction to stay focused.</li>
+                        <li><strong>Children who learn better with hands-on activities.</strong> If your child struggles with technology or gets easily distracted at home, in-person might help.</li>
+                        <li><strong>Families wanting intensive social interaction.</strong> If your main goal is for your child to make friends through chess clubs, in-person offers more of that.</li>
+                    </ul>
+                    <p>But honestly? Most kids aged 6-15 thrive with online chess classes.</p>
+
+                    <h2>What Parents Say About Online Chess Classes for Kids</h2>
+                    <p><em>"I was skeptical at first. But watching my 8-year-old actually excited to log into his chess lesson changed my mind. No fighting to get in the car, no rushing. Just learning."</em> — Parent from Texas</p>
+                    <p><em>"We tried in-person classes for six months. My daughter learned some basics but didn't love it. Switched to online with a teacher who made it fun and interactive. She's been playing for a year now and asks when her next lesson is."</em> — Parent from California</p>
+                    <p><em>"The price difference was huge. We're saving almost $100 a month, and my son is learning faster because it's one-on-one attention."</em> — Parent from Florida</p>
+
+                    <h2>The Real Benefits Your Child Gets From Chess (Any Format)</h2>
+                    <p>Whether online or in-person, chess gives your child serious advantages:</p>
+                    <ul>
+                        <li><strong>Better focus and concentration.</strong> Chess trains kids to think ahead and stay patient. That helps in school and life.</li>
+                        <li><strong>Problem-solving skills.</strong> Every move is a puzzle. Kids learn to think through options and consequences.</li>
+                        <li><strong>Confidence boost.</strong> Winning games feels amazing. Even losing teaches resilience and trying again.</li>
+                        <li><strong>Improved academic performance.</strong> Studies link chess to better math scores, reading comprehension, and critical thinking.</li>
+                        <li><strong>A healthy hobby.</strong> Screen time that builds their brain instead of numbing it.</li>
+                    </ul>
+
+                    <h2>How to Choose the Right Online Chess Academy for Your Child</h2>
+                    <p>Not all online chess classes are created equal. Here's what to look for:</p>
+                    
+                    <h3>Check the Teachers' Experience</h3>
+                    <p>Do they have experience teaching young children? Are they patient and encouraging?</p>
+                    <p>Great chess players don't automatically make great teachers. Find someone who knows how to make learning fun for kids.</p>
+
+                    <h3>Look for Interactive, Engaging Lessons</h3>
+                    <p>Your child shouldn't just watch someone talk for an hour. Good online chess classes include:</p>
+                    <ul>
+                        <li>Interactive digital boards</li>
+                        <li>Games and puzzles</li>
+                        <li>Encouragement and positive feedback</li>
+                        <li>Homework and practice assignments</li>
+                    </ul>
+
+                    <h3>Make Sure Scheduling Is Actually Flexible</h3>
+                    <p>Some "online" programs still lock you into rigid times. Find one that lets you choose or change lesson times easily.</p>
+
+                    <h3>Start With a Trial Class</h3>
+                    <p>Never commit without trying first. A trial class lets you see if your child connects with the teacher and enjoys the format.</p>
+                    <p>If they're bored or frustrated in the trial, keep looking.</p>
+
+                    <h2>Why GrowMyChess.com Works for Busy Parents and Curious Kids</h2>
+                    <p>At growmychess.com, we built our online chess classes specifically for parents like you and kids ready to learn.</p>
+                    <p>Here's what makes us different:</p>
+                    <ul>
+                        <li><strong>Handpicked coaches</strong> who love teaching kids and make chess exciting, not boring</li>
+                        <li><strong>One-on-one attention</strong> so your child gets personalized coaching every session</li>
+                        <li><strong>Flexible scheduling</strong> that actually fits your family's crazy calendar</li>
+                        <li><strong>Fun, interactive lessons</strong> using games, puzzles, and challenges kids enjoy</li>
+                        <li><strong>Affordable pricing</strong> that doesn't make you choose between chess and other activities</li>
+                        <li><strong>Progress tracking</strong> so you see exactly how your child improves</li>
+                    </ul>
+                    <p>We teach kids aged 4-15, from complete beginners to tournament players. No matter where your child starts, we meet them there and help them grow.</p>
+
+                    <h2>So, Which Is Better: Online or In-Person Chess Coaching?</h2>
+                    <p>Here's the simple answer: for most families with kids aged 6-15, <strong>online chess classes win.</strong></p>
+                    <p>They're more convenient, more affordable, give you access to better teachers, and fit into real life without adding stress.</p>
+                    <p>In-person lessons can work. But unless your child absolutely needs face-to-face interaction or you have unlimited time and budget, online coaching delivers better results with less hassle.</p>
+                    <p>Your child gets the same brain-building benefits. You get your evenings back and save money. Everyone wins.</p>
+
+                    <h2>Ready to See If Online Chess Classes Work for Your Child?</h2>
+                    <p>Stop wondering and start knowing.</p>
+                    <p><a href="#" class="open-demo-link text-orange-600 font-bold underline cursor-pointer">Book a free trial class at growmychess.com today.</a> No pressure, no commitment. Just one session to see if your child lights up.</p>
+                    <p>You'll meet one of our experienced coaches, watch how interactive and fun the lesson is, and see if this is the right fit for your family.</p>
+                    <p>Spots fill up fast because parents love the flexibility and kids love the coaches.</p>
+                    <p>👉 <a href="#" class="open-demo-link text-orange-600 font-bold underline cursor-pointer">Click here to book your free trial class now →</a></p>
+                    <p>Your child's confidence, focus, and critical thinking start with one decision. Make it today.</p>
+                `
+            },
+            {
+                id: "how-to-pick-perfect-chess-coach",
+                title: "How to Pick the Perfect Chess Coach for Your Child (Without the Guesswork)",
+                date: "November 5, 2026",
+                author: "Abhishek Maniyar",
+                readTime: "6 min read",
+                category: "Guide",
+                excerpt: "You want your child to learn chess. That's amazing. But here's the tricky part: not all chess coaches are created equal. Let's make sure you choose wisely.",
+                content: `
+                    <p>You want your child to learn chess. That's amazing. But here's the tricky part: not all chess coaches are created equal.</p>
+                    <p>The wrong coach can turn chess into a chore. The right one? They'll have your child begging for their next lesson.</p>
+                    <p>Let's make sure you choose wisely.</p>
+
+                    <h2>Why Your Child's Chess Coach Matters More Than You Think</h2>
+                    <p>Think of it this way: you wouldn't hire a marathon runner to teach swimming, right?</p>
+                    <p>Chess is the same. A coach who works wonders with teenagers might bore a 5-year-old to tears. Someone perfect for beginners might not challenge your advanced 12-year-old.</p>
+                    <p>The right match changes everything. Your child will actually look forward to lessons. They'll build confidence. And yes, you'll see those benefits spill over into schoolwork and daily life.</p>
+
+                    <h2>What to Look for When Choosing Online Chess Classes for Kids</h2>
+                    
+                    <h3>1. Does the Coach Match Your Child's Age and Skill Level?</h3>
+                    <p>This is rule number one.</p>
+                    <p>A great coach for kids knows how to explain chess without fancy jargon. They use stories, games, and examples that make sense to young minds.</p>
+                    <p>Ask yourself:</p>
+                    <ul>
+                        <li>Does this coach specialize in teaching children, or do they mostly work with adults?</li>
+                        <li>Have they taught kids at my child's exact age and skill level before?</li>
+                        <li>Can they show you success stories or testimonials from parents like you?</li>
+                    </ul>
+                    <p>If a coach can't clearly explain their experience with kids, keep looking.</p>
+
+                    <h3>2. Is the Teaching Style Fun or Just "Teachy"?</h3>
+                    <p>Here's a secret: kids don't care about chess theory. Not at first, anyway.</p>
+                    <p>They care about having fun. Solving cool puzzles. Winning games. Feeling smart.</p>
+                    <p>The best online chess classes for kids mix learning with play. They keep things moving. No long, boring lectures. Just bite-sized lessons with lots of doing.</p>
+                    <p><strong>Red flags to watch for:</strong></p>
+                    <ul>
+                        <li>The coach talks more than the child does</li>
+                        <li>Lessons feel like school homework (stiff and serious)</li>
+                        <li>Your child looks bored or distracted during the trial class</li>
+                    </ul>
+                    <p><strong>Green flags:</strong></p>
+                    <ul>
+                        <li>Your child smiles and engages</li>
+                        <li>The coach asks questions and listens</li>
+                        <li>Lessons feel like games, not tests</li>
+                    </ul>
+
+                    <h3>3. Can They Actually Teach, or Do They Just Play Well?</h3>
+                    <p>Being good at chess and being good at teaching chess are two completely different skills.</p>
+                    <p>You've probably met someone who's brilliant at math but terrible at explaining it. Same thing here.</p>
+                    <p>What to check:</p>
+                    <ul>
+                        <li>Does the coach have teaching experience, not just playing experience?</li>
+                        <li>Can they break down complicated ideas into simple steps?</li>
+                        <li>Do they have patience when your child doesn't get it the first time?</li>
+                    </ul>
+                    <p>A coach with a fancy title (like "Grandmaster") sounds impressive. But if they can't connect with your 7-year-old, it doesn't matter.</p>
+
+                    <h3>4. Do They Offer Personalized Attention?</h3>
+                    <p>Copy-paste lessons don't work.</p>
+                    <p>Your child is unique. Maybe they're super competitive. Maybe they're shy. Maybe they learn fast or need extra time.</p>
+                    <p>The right coach adapts to your child, not the other way around.</p>
+                    <p>Questions to ask:</p>
+                    <ul>
+                        <li>Will my child get one-on-one lessons, or are they in a big group?</li>
+                        <li>Does the coach create custom lesson plans based on progress?</li>
+                        <li>How do they handle kids who struggle or get frustrated?</li>
+                    </ul>
+                    <p>Look for coaches who treat your child like an individual, not student #47.</p>
+
+                    <h3>5. Are They Available When You Need Them?</h3>
+                    <p>Let's be real: your schedule is packed.</p>
+                    <p>School. Activities. Family time. The last thing you need is a coach who only teaches at impossible times.</p>
+                    <p>Make sure:</p>
+                    <ul>
+                        <li>Lesson times fit your family's routine</li>
+                        <li>The coach offers flexibility if you need to reschedule</li>
+                        <li>Online classes mean no driving (huge time-saver for you!)</li>
+                    </ul>
+                    <p>Good online chess classes for kids work around your life, not against it.</p>
+
+                    <h3>6. Can You Actually Afford It?</h3>
+                    <p>Quality coaching doesn't have to break the bank.</p>
+                    <p>Some coaches charge premium prices because they can, not because they're better. Others offer incredible value without the fancy price tag.</p>
+                    <p>Smart money questions:</p>
+                    <ul>
+                        <li>What's included in the price? (Materials, homework, progress reports?)</li>
+                        <li>Are there package deals or discounts for multiple lessons?</li>
+                        <li>Is there a free trial so you can test before you commit?</li>
+                    </ul>
+                    <p>Never feel pressured to pay upfront for months of lessons. Start small. See results. Then invest more.</p>
+
+                    <h3>7. Do Other Parents Trust Them?</h3>
+                    <p>Word of mouth is gold.</p>
+                    <p>Read reviews. Ask for references. Join parent groups and ask who they recommend.</p>
+                    <p>Look for patterns in feedback:</p>
+                    <ul>
+                        <li>Do kids actually stick with this coach long-term?</li>
+                        <li>Do parents mention real improvements in focus, grades, or confidence?</li>
+                        <li>Are there any complaints about communication or professionalism?</li>
+                    </ul>
+                    <p>If multiple parents rave about a coach, that's a very good sign.</p>
+
+                    <h2>How to Test a Chess Coach Before Committing</h2>
+                    <p>Never skip the trial class. Never.</p>
+                    <p>This is your chance to see everything in action. How your child responds. How the coach teaches. Whether it feels like the right fit.</p>
+                    <p>During the trial, watch for:</p>
+                    <ul>
+                        <li>Does your child seem happy and engaged?</li>
+                        <li>Does the coach encourage and praise effort, not just wins?</li>
+                        <li>Can the coach handle your child's energy level and attention span?</li>
+                        <li>Do you feel comfortable asking questions?</li>
+                    </ul>
+                    <p>Trust your gut. If something feels off, it probably is.</p>
+
+                    <h2>The Real Benefits Your Child Gets from the Right Chess Coach</h2>
+                    <p>When you find the right match, magic happens.</p>
+                    <p>Your child doesn't just learn chess. They learn how to think ahead. How to solve problems. How to lose gracefully and win humbly.</p>
+                    <p>You'll start noticing:</p>
+                    <ul>
+                        <li>Better focus during homework</li>
+                        <li>Improved patience (yes, really!)</li>
+                        <li>More confidence in trying hard things</li>
+                        <li>Strategic thinking that helps in school and sports</li>
+                    </ul>
+                    <p>And the best part? They'll actually enjoy it. No nagging required.</p>
+
+                    <h2>What Makes GrowMyChess Different</h2>
+                    <p>At GrowMyChess, we get it. You're busy. You want results. And you want your child to actually have fun.</p>
+                    <p>That's exactly what we deliver.</p>
+                    <p>Here's what parents love about us:</p>
+                    <ul>
+                        <li><strong>Expert coaches trained specifically for kids</strong> – We know how to teach 4-year-olds differently than 14-year-olds</li>
+                        <li><strong>Personalized one-on-one lessons</strong> – No crowded classrooms, just focused attention</li>
+                        <li><strong>Flexible scheduling</strong> – Classes that fit your crazy life</li>
+                        <li><strong>Fun, engaging teaching methods</strong> – Your child will ask for more lessons, not less</li>
+                        <li><strong>Affordable pricing</strong> – Quality coaching that doesn't empty your wallet</li>
+                        <li><strong>Proven results</strong> – Real kids making real progress in focus, grades, and confidence</li>
+                    </ul>
+                    <p>We're not just teaching chess. We're building sharper, more confident young minds.</p>
+
+                    <h2>Ready to Find Your Child's Perfect Chess Coach?</h2>
+                    <p>Stop guessing. Stop searching.</p>
+                    <p><a href="#" class="open-demo-link text-orange-600 font-bold underline cursor-pointer">Book a free trial class with GrowMyChess today</a> and see the difference the right coach makes.</p>
+                    <p>Your child deserves a coach who makes learning fun. Who celebrates their wins. Who turns "I can't" into "I did it!"</p>
+                    <p>👉 <a href="#" class="open-demo-link text-orange-600 font-bold underline cursor-pointer">Visit growmychess.com now and claim your free trial class.</a></p>
+                    <p>Spots fill up fast. Don't wait. Give your child the gift of better thinking, stronger focus, and serious confidence.</p>
+                    <p>Let's grow your child's chess skills together. Starting today.</p>
+                `
+            },
+            {
+                id: "is-chess-coach-worth-it",
+                title: "Is a Chess Coach Really Worth Your Money? (The Honest Answer for Parents)",
+                date: "October 30, 2026",
+                author: "Abhishek Maniyar",
+                readTime: "6 min read",
+                category: "Parenting",
+                excerpt: "You're scrolling through activities for your child. Piano? Check. Swimming? Done. Do you really need to pay someone to teach a board game? Let's talk about it.",
+                content: `
+                    <p>You're scrolling through activities for your child. Piano? Check. Swimming? Done. Then someone mentions chess coaching.</p>
+                    <p>Your first thought: <em>"Do I really need to pay someone to teach my kid a board game?"</em></p>
+                    <p>Let's talk about it. No fluff. Just the truth.</p>
+
+                    <h2>What You're Actually Paying For (It's Not Just Moving Pieces)</h2>
+                    <p>When you hire a chess coach, you're not buying chess lessons. You're buying something much bigger.</p>
+                    <p>Think of it like this: Anyone can hand your child a violin. But only a teacher can help them make music. Chess works the same way.</p>
+                    <p>Here's what a real coach does:</p>
+                    <ul>
+                        <li><strong>Spots mistakes</strong> your child can't see yet (and fixes them before they become habits)</li>
+                        <li><strong>Builds a learning path</strong> that matches your child's age and personality</li>
+                        <li><strong>Keeps them motivated</strong> when they want to quit after losing a game</li>
+                        <li><strong>Teaches them to think ahead</strong> in chess AND in life</li>
+                    </ul>
+                    <p>Your child can watch YouTube videos. Sure. But a video can't answer their specific question at 4 PM on a Tuesday.</p>
+
+                    <h2>The Real Benefits You'll See (And When)</h2>
+                    <h3>Your Child Gets Smarter, Faster</h3>
+                    <p>Parents tell us they notice changes in 4-6 weeks. Not chess changes. Life changes.</p>
+                    <p>Your 7-year-old who couldn't sit still for homework? Suddenly focusing for 30 minutes straight. Your shy 10-year-old? Raising their hand more in class.</p>
+                    <p>This isn't magic. It's what chess does to a developing brain:</p>
+                    <ul>
+                        <li><strong>Better concentration:</strong> they HAVE to focus or they lose</li>
+                        <li><strong>Improved problem-solving:</strong> every move is a mini-puzzle</li>
+                        <li><strong>Stronger memory:</strong> remembering patterns and strategies</li>
+                        <li><strong>More confidence:</strong> winning feels amazing, and learning from losses builds character</li>
+                    </ul>
+
+                    <h3>You Save Time and Sanity</h3>
+                    <p>Here's what trying to teach chess yourself looks like: You Google "how to teach kids chess." You buy a board. You sit down all excited. Your child asks a question you can't answer. They get frustrated. You get frustrated. The board goes in the closet.</p>
+                    <p>Online chess classes for kids solve this completely. You book a slot. Your child logs in from your kitchen table. The coach does the teaching. You get to be the parent, not the teacher. No driving. No traffic. No waiting in lobbies.</p>
+
+                    <h2>The Money Part (Let's Get Specific)</h2>
+                    <p>A coffee costs $5. You probably buy several a week without thinking. Quality online chess classes for kids typically cost $15-40 per session.</p>
+                    <p>For that, your child gets:</p>
+                    <ul>
+                        <li>One-on-one attention from an expert</li>
+                        <li>Personalized feedback and progress tracking</li>
+                        <li>Structured curriculum (not random lessons)</li>
+                        <li>Skills that last their entire life</li>
+                    </ul>
+                    <p>Ask yourself: What else can you buy for $20 that makes your child smarter, more focused, and more confident?</p>
+
+                    <h2>When Coaching Is DEFINITELY Worth It</h2>
+                    <h3>If Your Child Shows Any Interest</h3>
+                    <p>Kids are interested in a million things on Monday and nothing by Friday. But if your child mentions chess twice, or stops to watch a game, or asks to play again? That spark is worth nurturing.</p>
+                    
+                    <h3>If You Want Academic Improvement</h3>
+                    <p>Here's something interesting: Chess coaches often hear from parents that math grades went up. Why? Chess teaches the same skills: patterns, logic, thinking steps ahead. One mom told us her daughter's teacher asked what changed. The only new thing? Online chess classes twice a week.</p>
+
+                    <h2>How to Know If You're Getting Your Money's Worth</h2>
+                    <ul>
+                        <li><strong>Week 1-4: Watch Their Attitude.</strong> Are they excited before class? Do they mention something they learned? Engagement is the first return on investment.</li>
+                        <li><strong>Week 5-12: Look for Skill Growth.</strong> They should be winning games they would've lost before. A good coach will show you this progress clearly.</li>
+                        <li><strong>Month 3+: Notice Life Changes.</strong> Parents report: "He doesn't give up on homework anymore" or "She thinks before acting now". These changes are worth WAY more than the cost of lessons.</li>
+                    </ul>
+
+                    <h2>"But Can't They Just Learn Free on Apps?"</h2>
+                    <p>Yes. And no. Apps are great for practice. But learning from an app is like learning to swim from a book. Here's what apps can't do:</p>
+                    <ul>
+                        <li>Correct bad habits before they stick</li>
+                        <li>Explain WHY a move was wrong in a way your specific child understands</li>
+                        <li>Encourage them after a tough loss</li>
+                    </ul>
+                    <p>Apps are tools. Coaches are teachers. Your child needs both.</p>
+
+                    <h2>The Bottom Line</h2>
+                    <p>If you want your child to be smarter, more focused, and more confident, and you're willing to invest about $20 per week for a few months, then yes. Absolutely worth it.</p>
+                    <p>Ready to see if it works? <a href="#" class="open-demo-link text-orange-600 font-bold underline cursor-pointer">Book a trial class with GrowMyChess today</a> and see the difference a real coach makes. Your child's first "checkmate" moment is waiting.</p>
+                `
+            },
+            {
+                id: "does-chess-improve-grades",
+                title: "Does Chess Really Improve School Grades?",
+                date: "October 24, 2026",
+                author: "Abhishek Maniyar",
+                readTime: "4 min read",
+                category: "Education",
+                excerpt: "The shocking link between chess and math scores. Discover how the game of kings translates to academic success.",
+                content: `
+                    <p>It is a question parents ask me almost every week: <em>"Will playing chess actually help my child do better in school?"</em></p>
+                    <p>The short answer is <strong>Yes</strong>. But the science behind <em>why</em> it works is fascinating.</p>
+                    <h2>The Math Connection</h2>
+                    <p>Multiple studies over the past two decades have shown a direct correlation between chess instruction and improved math test scores. Chess requires a player to calculate variations, understand spatial geometry (how a knight moves vs. a bishop), and evaluate numerical advantages (a queen is worth 9 points, a pawn is worth 1).</p>
+                    <p>By constantly exercising these logical muscles on the board, children naturally develop a higher aptitude for mathematical problem-solving in the classroom.</p>
+                    <h2>Focus and Patience</h2>
+                    <ul>
+                        <li><strong>Extended Attention Span:</strong> In an era of 15-second videos, chess forces a child to sit, focus, and think for 30 to 60 minutes.</li>
+                        <li><strong>Delayed Gratification:</strong> To win at chess, you must plan 5 moves ahead. This teaches children that patience leads to ultimate victory.</li>
+                    </ul>
+                    <p>If you are looking for an extracurricular activity that directly feeds into academic success, chess is undoubtedly the gold standard.</p>
+                `
+            },
+            {
+                id: "chess-vs-video-games",
+                title: "Chess vs Video Games: The Ultimate Brain Battle",
+                date: "October 18, 2026",
+                author: "Abhishek Maniyar",
+                readTime: "5 min read",
+                category: "Parenting",
+                excerpt: "How to swap mindless screen time for brain-building fun. Why chess provides the same dopamine hit but with massive cognitive benefits.",
+                content: `
+                    <p>We are fighting a constant battle against screens. Video games are designed by psychologists to keep kids hooked, offering instant gratification and flashy rewards.</p>
+                    <p>So, how can a 1500-year-old board game compete?</p>
+                    <h2>The Dopamine Loop</h2>
+                    <p>Video games hijack the brain's dopamine system by providing unearned rewards. Chess, however, provides a <strong>productive dopamine loop</strong>.</p>
+                    <p>When a child spots a tactic, captures a piece, or delivers checkmate, they experience a massive rush of accomplishment. The difference? They <em>earned</em> that rush through deep calculation, logic, and outsmarting another human being.</p>
+                    <h2>Making the Switch</h2>
+                    <p>You don't need to ban video games overnight. Instead, introduce chess as a "strategic game" they play online. The transition is often seamless because the competitive nature of chess appeals to the exact same instincts that make video games so addictive.</p>
+                `
+            },
+            {
+                id: "best-age-to-start-chess",
+                title: "What is the Best Age to Start Chess?",
+                date: "October 02, 2026",
+                author: "Abhishek Maniyar",
+                readTime: "3 min read",
+                category: "Beginners",
+                excerpt: "Is 4 too young? Is 12 too old? Here is what experts say about the optimal age to introduce your child to chess.",
+                content: `
+                    <p>One of the most common myths is that your child needs to be a genius to start playing chess. The truth is, chess helps <em>create</em> genius.</p>
+                    <h2>The Golden Window: Ages 4 to 7</h2>
+                    <p>The ideal age to introduce the basic movement of the pieces is between 4 and 7 years old. At this stage, children's brains possess incredible neuroplasticity. They absorb rules and patterns like sponges.</p>
+                    <h2>What if my child is older?</h2>
+                    <p>It is <strong>never too late</strong>. Starting at 10, 12, or even 15 simply means the child has a more developed prefrontal cortex. They can bypass the basic stages quickly and dive straight into advanced strategies and complex openings.</p>
+                    <p>The best time to plant a tree was 20 years ago. The second best time is today. The same applies to chess.</p>
+                `
+            }
+        ];
+
         const Icons = {
             X: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>,
             Check: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="w-5 h-5 text-green-500"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>,
             Star: () => <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-orange-500"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>,
-            Lock: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-16 h-16 text-orange-600 mx-auto mb-4"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>,
             Menu: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-8 h-8"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>,
             Plus: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>,
-            Minus: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4"/></svg>,
+            ArrowLeft: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>,
             Brain: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-10 h-10 text-orange-600"><path d="M9.5 2A2.5 2.5 0 0 0 7 4.5v15a2.5 2.5 0 0 0 5 0V4.5A2.5 2.5 0 0 0 9.5 2z"/><path d="M14.5 2A2.5 2.5 0 0 1 17 4.5v15a2.5 2.5 0 0 1-5 0V4.5A2.5 2.5 0 0 1 14.5 2z"/></svg>,
             Trophy: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-10 h-10 text-orange-600"><path d="M8 21h8m-4-4v4m0-14v10m-8-2a9 9 0 0116 0H4z"/></svg>,
             Users: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-10 h-10 text-orange-600"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m20 0v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>,
             WhatsApp: () => <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
         };
 
-        // --- 2. REUSABLE UI COMPONENTS ---
         const ModalBase = ({ isOpen, onClose, title, children }) => {
             if (!isOpen) return null;
             return (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 animate-fade">
                     <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
-                        {/* Header Fixed Inside Modal */}
                         <div className="flex justify-between items-center p-4 border-b shrink-0 sticky top-0 bg-white rounded-t-2xl z-10">
                             <h2 className="text-xl font-bold text-slate-900">{title}</h2>
                             <button onClick={onClose} className="p-2 bg-gray-100 rounded-full text-gray-600 hover:text-black hover:bg-gray-200 transition">
                                 <Icons.X />
                             </button>
                         </div>
-                        {/* Scrollable Content (Exact p-4 for mobile safety) */}
                         <div className="p-4 sm:p-5 overflow-y-auto">
                             {children}
                         </div>
@@ -105,9 +718,8 @@
             );
         };
 
-        // --- 3. FORM LOGIC & COMPONENTS ---
         const useFormSubmit = (url) => {
-            const [status, setStatus] = useState('idle'); // idle, submitting, success
+            const [status, setStatus] = useState('idle');
             const submit = async (e, formData) => {
                 e.preventDefault();
                 setStatus('submitting');
@@ -117,7 +729,7 @@
                     await fetch(url, { method: 'POST', mode: 'no-cors', body: data });
                     setStatus('success');
                 } catch (err) {
-                    setStatus('success'); // no-cors hides response, assume success if no JS crash
+                    setStatus('success');
                 }
             };
             return { status, submit };
@@ -157,7 +769,6 @@
                                 <div className="flex-1"><FormField name="type" label="Class Type" type="select" options={['1-on-1 (Private)', 'Group (Small Batch)']} /></div>
                                 <div className="flex-1"><FormField name="goal" label="Goal" type="select" options={['Fun Hobby', 'Play Tournaments', 'Better Focus/Grades']} /></div>
                             </div>
-                            {/* Stack Date/Time vertically on mobile per strict constraints */}
                             <div className="flex flex-col sm:flex-row gap-0 sm:gap-4">
                                 <div className="flex-1"><FormField name="date" label="Preferred Date" type="date" /></div>
                                 <div className="flex-1"><FormField name="time" label="Preferred Time" type="time" /></div>
@@ -172,7 +783,6 @@
         };
 
         const HiringForm = ({ isOpen, onClose, type }) => {
-            // Reuses one modal for both Coach and Partner forms
             const isCoach = type === 'coach';
             const url = isCoach 
                 ? 'https://docs.google.com/forms/d/e/1FAIpQLSdNehBayOIwF4k0GjShh9W-0fCCxFZ-HcO6bULceKzTS1ZUUA/formResponse'
@@ -220,22 +830,25 @@
             );
         };
 
-        // --- 4. PAGE SECTIONS ---
-
         const Navbar = ({ openDemo }) => (
             <nav className="fixed w-full bg-white/95 backdrop-blur shadow-sm z-40 border-b border-gray-100">
                 <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-                    <div className="flex items-center gap-2">
+                    <a href="#home" className="flex items-center gap-2">
                         <img src="logo.png" alt="♟ GrowMyChess" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} className="h-8 md:h-10 hidden" />
-                        <span className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">♟ GrowMyChess</span>
-                    </div>
+                        <span className="text-xl md:text-2xl font-black text-slate-900 tracking-tight hover:text-orange-600 transition">♟ GrowMyChess</span>
+                    </a>
                     <div className="hidden md:flex items-center gap-6 font-semibold text-gray-600">
+                        <a href="#home" className="hover:text-orange-600">Home</a>
                         <a href="#curriculum" className="hover:text-orange-600">Curriculum</a>
                         <a href="#pricing" className="hover:text-orange-600">Pricing</a>
+                        <a href="#blogs" className="text-orange-600 hover:text-orange-800 bg-orange-50 px-3 py-1 rounded-full">Blogs</a>
                         <a href="tel:+917387494614" className="text-slate-900 flex items-center gap-1">📞 +91 73874-94614</a>
                         <Button onClick={openDemo} className="py-2 px-5 text-sm">Free Class</Button>
                     </div>
-                    <button className="md:hidden text-slate-900 p-1" onClick={openDemo}><span className="bg-orange-600 text-white px-4 py-2 rounded-full font-bold text-sm">Free Class</span></button>
+                    <div className="md:hidden flex gap-2">
+                        <a href="#blogs" className="text-slate-900 p-2 font-bold text-sm bg-gray-100 rounded-full">Blogs</a>
+                        <button className="text-slate-900 p-1" onClick={openDemo}><span className="bg-orange-600 text-white px-4 py-2 rounded-full font-bold text-sm">Free Class</span></button>
+                    </div>
                 </div>
             </nav>
         );
@@ -322,7 +935,6 @@
             <section className="py-20 px-4 max-w-5xl mx-auto">
                 <div className="bg-slate-900 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-10 shadow-2xl text-white">
                     <div className="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-orange-500 shrink-0 bg-gray-800">
-                        {/* Fallback image style applied if generated-image fails */}
                         <img src="abhishek_headshot.jpg" alt="Abhishek Maniyar" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='flex'; }} className="w-full h-full object-cover" />
                         <div className="w-full h-full hidden items-center justify-center text-4xl font-black text-gray-500">AM</div>
                     </div>
@@ -370,7 +982,7 @@
                                     {p.popular && <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-orange-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Most Popular</div>}
                                     <h3 className="text-2xl font-bold mb-2">{p.name}</h3>
                                     <p className="text-gray-600 mb-6">{p.desc}</p>
-                                    <div className="mb-6 font-black text-slate-900" key={cur + p.basePrice}> {/* Physical re-render trigger */}
+                                    <div className="mb-6 font-black text-slate-900" key={cur + p.basePrice}>
                                         <span className="text-4xl animate-fade inline-block">{rates[cur].symbol}{Math.round(p.basePrice * rates[cur].rate)}</span>
                                         <span className="text-gray-500 text-lg font-normal"> / month</span>
                                     </div>
@@ -415,31 +1027,138 @@
             );
         };
 
-        const Blog = () => {
-            const [activeArticle, setActiveArticle] = useState(null);
-            const articles = [
-                { title: "What is the Best Age to Start Chess?", excerpt: "Is 4 too young? Is 12 too old? Here is what experts say...", content: "The ideal age to introduce chess is between 4 and 7. At this age, children's brains are like sponges. They easily grasp the movement of pieces. However, it's never too late! Starting at 12 or 15 simply means the child can grasp complex strategies faster." },
-                { title: "Chess vs Video Games", excerpt: "How to swap mindless screen time for brain-building fun.", content: "Video games often rely on quick reflexes and instant gratification. Chess provides a dopamine hit based on deep logic, patience, and outsmarting an opponent. It turns screen time into highly productive brain-training." },
-                { title: "Does Chess Improve School Grades?", excerpt: "The shocking link between chess and math scores.", content: "Yes! Multiple studies show that kids who play chess score up to 20% higher in math and reading. Chess teaches calculation, pattern recognition, and the ability to sit still and focus—skills directly transferable to school." }
-            ];
+        const BlogPreview = () => {
+            // Show only the latest 3 blogs on the home page
+            const recentBlogs = BLOG_DATABASE.slice(0, 3);
             return (
                 <section className="py-20 px-4 bg-white border-t border-gray-200">
                     <div className="max-w-6xl mx-auto">
-                        <h2 className="text-3xl font-black mb-10 text-center">Helpful Tips for Parents</h2>
+                        <div className="flex justify-between items-end mb-10">
+                            <h2 className="text-3xl md:text-4xl font-black">Helpful Tips for Parents</h2>
+                            <a href="#blogs" className="hidden md:inline-flex text-orange-600 font-bold hover:text-orange-800 transition items-center gap-1">View All Blogs <Icons.ArrowLeft className="rotate-180" /></a>
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {articles.map((art, i) => (
-                                <div key={i} onClick={() => setActiveArticle(art)} className="bg-gray-50 p-6 rounded-2xl cursor-pointer hover:shadow-lg hover:bg-orange-50 transition border border-gray-100 group">
-                                    <h3 className="text-xl font-bold mb-3 group-hover:text-orange-600 transition">{art.title}</h3>
-                                    <p className="text-gray-600">{art.excerpt}</p>
-                                    <p className="text-orange-600 font-bold mt-4 text-sm uppercase tracking-wide">Read More →</p>
-                                </div>
+                            {recentBlogs.map((art, i) => (
+                                <a href={`#post/${art.id}`} key={i} className="bg-gray-50 p-6 rounded-2xl cursor-pointer hover:shadow-lg hover:bg-orange-50 transition border border-gray-100 group flex flex-col h-full">
+                                    <div className="text-xs font-bold text-orange-500 mb-2 uppercase tracking-wide">{art.category}</div>
+                                    <h3 className="text-xl font-bold mb-3 group-hover:text-orange-600 transition text-slate-900">{art.title}</h3>
+                                    <p className="text-gray-600 mb-6 flex-1">{art.excerpt}</p>
+                                    <div className="flex justify-between items-center border-t border-gray-200 pt-4 mt-auto">
+                                        <span className="text-sm text-gray-500 font-medium">{art.date}</span>
+                                        <span className="text-orange-600 font-bold text-sm tracking-wide">Read Post →</span>
+                                    </div>
+                                </a>
+                            ))}
+                        </div>
+                        <div className="mt-8 text-center md:hidden">
+                            <a href="#blogs" className="inline-block bg-orange-100 text-orange-700 px-6 py-3 rounded-full font-bold">View All Articles</a>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const BlogIndexPage = () => {
+            return (
+                <div className="pt-32 pb-20 px-4 min-h-screen bg-gray-50 animate-fade">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="text-center mb-16">
+                            <h1 className="text-5xl font-black text-slate-900 mb-4">GrowMyChess <span className="text-orange-600">Blog</span></h1>
+                            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Expert advice, tips, and science on why chess is the ultimate tool for your child's brain development.</p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {BLOG_DATABASE.map((post) => (
+                                <a href={`#post/${post.id}`} key={post.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition overflow-hidden flex flex-col group">
+                                    {/* Placeholder Image for Blog Cover */}
+                                    <div className="h-48 bg-slate-200 w-full relative overflow-hidden">
+                                        <img src={`https://placehold.co/600x400/ea580c/ffffff?text=${post.category}`} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                    </div>
+                                    <div className="p-6 flex flex-col flex-1">
+                                        <div className="flex gap-2 items-center mb-3">
+                                            <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">{post.category}</span>
+                                            <span className="text-gray-400 text-sm">{post.readTime}</span>
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-slate-900 mb-3 group-hover:text-orange-600 transition">{post.title}</h2>
+                                        <p className="text-gray-600 mb-6 flex-1">{post.excerpt}</p>
+                                        <div className="flex items-center justify-between border-t border-gray-100 pt-4 mt-auto">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center text-xs font-bold">AM</div>
+                                                <div className="text-sm font-medium text-slate-900">{post.author}</div>
+                                            </div>
+                                            <div className="text-sm text-gray-500">{post.date}</div>
+                                        </div>
+                                    </div>
+                                </a>
                             ))}
                         </div>
                     </div>
-                    <ModalBase isOpen={!!activeArticle} onClose={() => setActiveArticle(null)} title={activeArticle?.title}>
-                        <p className="text-gray-700 leading-relaxed text-lg">{activeArticle?.content}</p>
-                    </ModalBase>
-                </section>
+                </div>
+            );
+        };
+
+        const BlogPostPage = ({ id, openDemo }) => {
+            const post = BLOG_DATABASE.find(p => p.id === id);
+
+            // This listens for clicks on links embedded inside the raw HTML blog content
+            useEffect(() => {
+                const handleLinkClick = (e) => {
+                    const link = e.target.closest('.open-demo-link');
+                    if (link) {
+                        e.preventDefault();
+                        openDemo(); // Instantly open the form!
+                    }
+                };
+                document.addEventListener('click', handleLinkClick);
+                return () => document.removeEventListener('click', handleLinkClick);
+            }, [openDemo]);
+
+            if (!post) {
+                return (
+                    <div className="pt-40 pb-20 text-center min-h-screen">
+                        <h1 className="text-4xl font-bold mb-4">Post Not Found</h1>
+                        <a href="#blogs" className="text-orange-600 font-bold underline">Return to Blog</a>
+                    </div>
+                );
+            }
+
+            return (
+                <article className="pt-32 pb-20 px-4 min-h-screen bg-white animate-fade">
+                    <div className="max-w-3xl mx-auto">
+                        <a href="#blogs" className="inline-flex items-center gap-2 text-orange-600 font-bold hover:text-orange-800 transition mb-8">
+                            <Icons.ArrowLeft /> Back to all posts
+                        </a>
+                        
+                        <div className="mb-8">
+                            <span className="text-orange-600 font-bold tracking-widest uppercase text-sm">{post.category}</span>
+                            <h1 className="text-4xl md:text-5xl font-black text-slate-900 mt-2 mb-6 leading-tight">{post.title}</h1>
+                            
+                            <div className="flex items-center gap-4 border-b border-gray-200 pb-8">
+                                <div className="w-12 h-12 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-lg shadow-md">AM</div>
+                                <div>
+                                    <div className="font-bold text-slate-900">{post.author}</div>
+                                    <div className="text-sm text-gray-500 flex items-center gap-2">
+                                        <span>{post.date}</span> • <span>{post.readTime}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Beautifully Rendered HTML Content */}
+                        <div 
+                            className="blog-content"
+                            dangerouslySetInnerHTML={{ __html: post.content }} 
+                        />
+
+                        <div className="mt-16 pt-8 border-t border-gray-200 bg-orange-50 p-8 rounded-3xl text-center">
+                            <h3 className="text-2xl font-black text-slate-900 mb-4">Want to see these benefits in action?</h3>
+                            <p className="text-gray-600 mb-6">Book a free trial class with one of our expert coaches today.</p>
+                            <button onClick={openDemo} className="inline-block bg-orange-600 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:bg-orange-700 transition">
+                                Book a Free Chess Class
+                            </button>
+                        </div>
+                    </div>
+                </article>
             );
         };
 
@@ -456,43 +1175,76 @@
                     <div>
                         <h4 className="font-bold mb-4 text-orange-500 uppercase tracking-widest text-sm">Quick Links</h4>
                         <ul className="space-y-2 text-gray-300">
-                            <li><a href="#curriculum" className="hover:text-white">Curriculum</a></li>
-                            <li><a href="#pricing" className="hover:text-white">Pricing</a></li>
-                            <li><a href="mailto:hello@growmychess.com" className="hover:text-white">hello@growmychess.com</a></li>
+                            <li><a href="#home" className="hover:text-white transition">Home</a></li>
+                            <li><a href="#blogs" className="hover:text-white transition">Our Blog</a></li>
+                            <li><a href="mailto:hello@growmychess.com" className="hover:text-white transition">hello@growmychess.com</a></li>
                         </ul>
                     </div>
                     <div>
                         <h4 className="font-bold mb-4 text-orange-500 uppercase tracking-widest text-sm">Work With Us</h4>
                         <ul className="space-y-2 text-gray-300">
-                            <li><button onClick={openCoach} className="hover:text-white text-left">Apply as Coach</button></li>
-                            <li><button onClick={openPartner} className="hover:text-white text-left">Partner Program</button></li>
+                            <li><button onClick={openCoach} className="hover:text-white text-left transition">Apply as Coach</button></li>
+                            <li><button onClick={openPartner} className="hover:text-white text-left transition">Partner Program</button></li>
                         </ul>
                     </div>
                 </div>
             </footer>
         );
 
-        // --- 5. MAIN APP ---
         const App = () => {
-            const [modalState, setModalState] = useState({ type: null }); // null, 'demo', 'coach', 'partner'
+            // Modal State
+            const [modalState, setModalState] = useState({ type: null }); 
             const close = () => setModalState({ type: null });
 
-            // Lock body scroll when modal is open
+            // Router State
+            const [currentPath, setCurrentPath] = useState(window.location.hash || '#home');
+
+            useEffect(() => {
+                const handleHashChange = () => {
+                    setCurrentPath(window.location.hash || '#home');
+                    window.scrollTo(0, 0); // Scroll to top when changing pages
+                };
+                window.addEventListener('hashchange', handleHashChange);
+                return () => window.removeEventListener('hashchange', handleHashChange);
+            }, []);
+
             useEffect(() => {
                 document.body.style.overflow = modalState.type ? 'hidden' : 'unset';
             }, [modalState.type]);
 
+            // Router Logic
+            const renderPageContent = () => {
+                if (currentPath === '#blogs') {
+                    return <BlogIndexPage />;
+                }
+                
+                if (currentPath.startsWith('#post/')) {
+                    const postId = currentPath.split('#post/')[1];
+                    return <BlogPostPage id={postId} openDemo={() => setModalState({ type: 'demo' })} />;
+                }
+
+                // Default Fallback: Home Page
+                return (
+                    <>
+                        <Hero openDemo={() => setModalState({ type: 'demo' })} />
+                        <SocialProof />
+                        <Methodology />
+                        <Curriculum />
+                        <Founder />
+                        <Pricing openDemo={() => setModalState({ type: 'demo' })} />
+                        <FAQ />
+                        <BlogPreview />
+                    </>
+                );
+            };
+
             return (
                 <div className="relative">
                     <Navbar openDemo={() => setModalState({ type: 'demo' })} />
-                    <Hero openDemo={() => setModalState({ type: 'demo' })} />
-                    <SocialProof />
-                    <Methodology />
-                    <Curriculum />
-                    <Founder />
-                    <Pricing openDemo={() => setModalState({ type: 'demo' })} />
-                    <FAQ />
-                    <Blog />
+                    
+                    {/* Rendered View based on Hash URL */}
+                    {renderPageContent()}
+
                     <Footer openCoach={() => setModalState({ type: 'coach' })} openPartner={() => setModalState({ type: 'partner' })} />
                     
                     {/* Floating WhatsApp */}
